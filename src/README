@@ -1,0 +1,8 @@
+THIS folder is backup taken on 3/23/2014 8:51pm.
+
+The makefile in the folder Examples works as a user level binary which can perform read and write
+
+Code for delete not yet implemented
+
+Know bug: If all the chucks are present while reading the erasure decoding returns segmentation fault
+
