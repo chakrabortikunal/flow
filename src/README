@@ -1,8 +1,13 @@
-THIS folder is backup taken on 3/23/2014 8:51pm.
+THIS folder is backup taken on 3/29/2014 8:12pm.
 
-The makefile in the folder Examples works as a user level binary which can perform read and write
+The makefile in the folder Examples works as a user level binary which can perform read, write and delete
 
-Code for delete not yet implemented
+The file to we written is encoded using erasure encoding and decoded while reading.
+Wear levelling is implemented to distribute the chunks created while encoding accross all the SSDs present in the server array.
 
-Know bug: If all the chucks are present while reading the erasure decoding returns segmentation fault
+Data deduplication is implemented to conserve disk space and prevent writing of duplicate data into the array. MD5 checksum of the file is used to determine whether data is duplicate or not.
+
+Two hashtables are implemented to map the md5 with the position of the file in the mapping table and map the filename with the position of the file in the mapping table. The md5 hashmap is needed for checking dedup. The filename hashmap is required for reading and deleting file when the user provides a filename.
+
+Know library bug: If all the chucks are present while reading the erasure decoding returns segmentation fault. This bug is solved in the decoding logic. When we get TOTAL-1 chunks from all the SSDs in the array, we ignore reading the last chunk from the array.
 
