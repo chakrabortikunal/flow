@@ -30,7 +30,7 @@
 CC = gcc  
 CFLAGS = -g -I$(HOME)/include -Wall -lcrypto -lssl
 
-SRC=flow.c myhash_latest.c 
+SRC=flow.c myhash_latest.c wl_v2.c
 INCLUDES= -I/proj_user/.
 
 ALL = flow_integrated

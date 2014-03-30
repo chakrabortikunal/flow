@@ -242,7 +242,15 @@ void ssdWrite(char * file)
 			//get input from wear levelling to fill wl_array
 			//wl = &wl_array[0];
 			//*wl = getWearLevelingResultQueue();//result queue returns a array of SSD numbers to write to
-			int wl_array[NUM_OF_CHUNKS]={1,2,1,2,1,2,1,2};
+			/* Wearlevelling called from here*/
+			//int wl_array[NUM_OF_CHUNKS]={1,2,1,2,1,2,1,2};
+			int wl_array[NUM_OF_CHUNKS];
+			getWearlevel(wl_array);
+		
+			for(i=0;i<NUM_OF_CHUNKS;i++)
+			{
+				printf("flow.c: wl_array[i]=%d",wl_array[i]);
+			}
 			
 			for( i = 0; i < NUM_OF_CHUNKS ; i++){
 				//mp_table[mt_it].chunk[i].chunk_no = mp_table[key1].chunk[i].chunk_no;
@@ -269,14 +277,16 @@ int main(int argc, char * argv[])
 	char in_c;
 
 	while(1){
-		//printf("\nEnter r for read a file\nw for writing a file\nd for deleting a file\nEnter your choice: ");
-		printf("\nEnter r / w / d: ");
+		//printf("\nEnter r for read a file\nw for writing a file\nd for deleting a file\nx for exit \nEnter your choice: ");
+		printf("\nEnter r / w / d / x: ");
 		scanf("%c",&in_c);
 		//fflush(stdin);
 		while ( getchar() != '\n' );
-		printf("\nEnter file name: ");
-		scanf("%s",file);
-		while ( getchar() != '\n' );
+		if(in_c != 'x'){
+			printf("\nEnter file name: ");
+			scanf("%s",file);
+			while ( getchar() != '\n' );
+		}
 
 		//printf("Input selection= %c file= %s\n",in_c,file);
 
@@ -290,8 +300,13 @@ int main(int argc, char * argv[])
 		case 'd':
 			ssdDelete(file);
 			break;
+		case 'x':
+			printf("Goodbye World!!\n");
+			exit(0);
+			break;
 		default:
 			printf("\nInvalid selection\n");
+			break;
 		}
 	}
 	return 0;
