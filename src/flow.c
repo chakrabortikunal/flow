@@ -2,17 +2,14 @@
 //#include <linux/kernel.h>
 
 
-//static int mt_it=0;// iterator to map through the mapping table
 Metadata * mp_table[MAX_SIZE];//the mapping table
 
 void initializeMetadata()
 {
 	int i;
-//	struct file_metadata mp_table[MAX_SIZE];
 	for( i=0;i < MAX_SIZE;i++)
 	{
 		mp_table[i] = NULL;
-		//mp_table[i].valid_data = false;
 		//mp_table[i].count = 0;
 	}
 }
@@ -148,7 +145,8 @@ void ssdWrite(char * file)
 {
 
 	int i;
-	static int mt_it=0;
+	//static int mt_it=0;
+	int mt_it=0;
 	int key1;
 	char * orig_name;
         unsigned char c[MD5_DIGEST_LENGTH];
@@ -230,34 +228,33 @@ void ssdWrite(char * file)
 			mp_table[mt_it]->dup_data = false;	
 			int *cc = (int *)malloc(sizeof(int)*1);
 			*cc=1;
-			mp_table[mt_it]->count=cc;
-		//	mp_table[mt_it]->count=1;
+			mp_table[mt_it]->count=cc;//make count point to common loaction in memory which all the members with same md5 will share
 			mp_table[mt_it]->orig_filename=NULL;
 			
 			/*add new(unique) md5 value to the hashtable with the mp_table iterator value*/
 			hashmap_add_md5(c,mt_it);
 			printf("\nMD5 inserted for file %s at mt_it= %d\n", file,mt_it );
 			
-			//int * wl; //wl = wearl level
-			//get input from wear levelling to fill wl_array
-			//wl = &wl_array[0];
-			//*wl = getWearLevelingResultQueue();//result queue returns a array of SSD numbers to write to
 			/* Wearlevelling called from here*/
 			//int wl_array[NUM_OF_CHUNKS]={1,2,1,2,1,2,1,2};
 			int wl_array[NUM_OF_CHUNKS];
-			getWearlevel(wl_array);
-		
+			
+			if(getWearlevel(wl_array) < 0)
+			{
+				printf("Flow.c: Write Failed\nServer Disk Space Full!!\n");
+				return;
+			}
+			#if 0
 			for(i=0;i<NUM_OF_CHUNKS;i++)
 			{
-				printf("flow.c: wl_array[i]=%d",wl_array[i]);
+				printf("flow.c: wl_array[%d]=%d\n",i,wl_array[i]);
 			}
+			#endif
 			
 			for( i = 0; i < NUM_OF_CHUNKS ; i++){
 				//mp_table[mt_it].chunk[i].chunk_no = mp_table[key1].chunk[i].chunk_no;
 				mp_table[mt_it]->chunk[i].SSD_no = wl_array[i];
 			}
-			//call erasure encoding function from here
-			//printf("flow.c Flag1\n");
 			encode(mp_table,mt_it,file,wl_array);	
 		}
 		mt_it++;

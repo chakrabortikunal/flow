@@ -186,8 +186,8 @@ int hashmap_find_filename( char * in_str, short del)
     }
     Node *temp= map_filename[key_index];
     Node* prev=NULL;
-    bool flag=true;
-    char c1,c2;
+    //bool flag=true;
+    //char c1,c2;
     while(temp != NULL){
 
 	if(strcmp(temp->str,in_str)){
